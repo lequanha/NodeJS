@@ -1,0 +1,92 @@
+MariaDB [videos]> show tables;
++------------------+
+| Tables_in_videos |
++------------------+
+| cameras          |
+| nodes            |
+| nodes_cameras    |
+| videos           |
++------------------+
+4 rows in set (0.001 sec)
+
+MariaDB [videos]> desc videos
+    -> ;
++----------+----------+------+-----+---------+-------+
+| Field    | Type     | Null | Key | Default | Extra |
++----------+----------+------+-----+---------+-------+
+| id       | int(11)  | NO   | MUL | NULL    |       |
+| nodeid   | int(11)  | NO   |     | NULL    |       |
+| cameraid | int(11)  | NO   |     | NULL    |       |
+| created  | datetime | NO   |     | NULL    |       |
++----------+----------+------+-----+---------+-------+
+4 rows in set (0.035 sec)
+
+MariaDB [videos]> desc cameras;
++-------------+---------+------+-----+---------+-------+
+| Field       | Type    | Null | Key | Default | Extra |
++-------------+---------+------+-----+---------+-------+
+| cameraid    | int(11) | YES  |     | NULL    |       |
+| description | int(11) | YES  |     | NULL    |       |
++-------------+---------+------+-----+---------+-------+
+2 rows in set (0.003 sec)
+
+MariaDB [videos]> desc nodes;
++----------+---------+------+-----+---------+-------+
+| Field    | Type    | Null | Key | Default | Extra |
++----------+---------+------+-----+---------+-------+
+| id       | int(11) | YES  |     | NULL    |       |
+| address  | int(11) | YES  |     | NULL    |       |
+| postcode | int(11) | YES  |     | NULL    |       |
+| gps_x    | int(11) | YES  |     | NULL    |       |
+| gps_y    | int(11) | YES  |     | NULL    |       |
++----------+---------+------+-----+---------+-------+
+5 rows in set (0.003 sec)
+
+MariaDB [videos]> show tables;
++------------------+
+| Tables_in_videos |
++------------------+
+| cameras          |
+| nodes            |
+| nodes_cameras    |
+| videos           |
++------------------+
+4 rows in set (0.001 sec)
+
+MariaDB [videos]> desc nodes_cameras;
++----------+---------+------+-----+---------+-------+
+| Field    | Type    | Null | Key | Default | Extra |
++----------+---------+------+-----+---------+-------+
+| ncid     | int(11) | YES  |     | NULL    |       |
+| nodeid   | int(11) | YES  |     | NULL    |       |
+| cameraid | int(11) | YES  |     | NULL    |       |
++----------+---------+------+-----+---------+-------+
+3 rows in set (0.002 sec)
+
+nano /usr/local/src/videos.sh
+
+#!/bin/bash
+for ffullname in /videos/*; do   
+        fname=${ffullname:8:33}
+	nodeid=${fname:4:3} 
+	cameraid=${fname:11:1} 
+	fyear=${fname:13:4} 
+	fmonth=${fname:17:2} 
+	fday=${fname:19:2} 
+	fhour=${fname:22:2} 
+	fminute=${fname:24:2} 
+	fsecond=${fname:26:2}
+	fdatetime="${fyear}-${fmonth}-${fday} ${fhour}:${fminute}:${fsecond}"
+	videofname="/usr/local/src/videos/${fname}"
+	curl --data "nodeid=${nodeid=}&cameraid=${cameraid}&created=${fdatetime}&videofile=${videofname}" http://localhost:3000/api/videos
+	mv /videos/${fname} /usr/local/src/videos/
+done
+
+
+crontab -e
+* * * * * /usr/local/src/videos.sh
+
+ wget https://github.com/arjunkomath/nodejs-rest-api-mysql/archive/master.zip
+
+
+
