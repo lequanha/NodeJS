@@ -118,6 +118,3 @@ DELETE http://www.example.com/api/table_name/id
 - Security Features
 - Find by field
 - and more! :)
-
-##Thank you.
-Arjun | arjunkomath@gmail.com
